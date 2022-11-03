@@ -5,7 +5,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:3.5.3'
+    classpath 'com.android.tools.build:gradle:7.3.1'
   }
 }
 
@@ -114,12 +114,12 @@ repositories {
     })
   }
 
-  if (!found) {
-    throw new GradleException(
-      "${project.name}: unable to locate React Native android sources. " +
-      "Ensure you have you installed React Native as a dependency in your project and try again."
-    )
-  }
+//  if (!found) {
+//    throw new GradleException(
+//      "${project.name}: unable to locate React Native android sources. " +
+//      "Ensure you have you installed React Native as a dependency in your project and try again."
+//    )
+//  }
 }
 
 
