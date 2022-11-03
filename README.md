@@ -97,11 +97,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-  },
 });
 
 export default App;
