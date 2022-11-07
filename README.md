@@ -8,15 +8,15 @@ Setting ringtones programatically is not available in iOS unfortunately. iTunes 
 
 With npm:
 
-`$ npm install react-native-ringtone-manager --save`
+`$ npm install react-native-ringtone-manager-new --save`
 
 Or with yarn:
 
-`$ yarn add react-native-ringtone-manager`
+`$ yarn add react-native-ringtone-manager-new`
 
 ### Mostly automatic installation
 
-`$ react-native link react-native-ringtone-manager`
+`$ react-native link react-native-ringtone-manager-new`
 
 ### Manual installation
 
@@ -34,7 +34,7 @@ Or with yarn:
    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
    ```
-     compile project(':react-native-ringtone-manager')
+     compile project(':react-native-ringtone-manager-new')
    ```
 
 ## Usage
@@ -43,7 +43,7 @@ Or with yarn:
 import * as React from 'react';
 
 import { StyleSheet, View, Text, FlatList } from 'react-native';
-import RingtoneManager from 'react-native-ringtone-manager';
+import RingtoneManager from 'react-native-ringtone-manager-new';
 
 interface rederItemProps {
   item: {

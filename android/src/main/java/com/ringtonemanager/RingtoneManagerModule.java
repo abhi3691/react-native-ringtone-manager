@@ -1,11 +1,18 @@
 package com.ringtonemanager;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.database.Cursor;
+
+import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -25,6 +32,9 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 public class RingtoneManagerModule extends ReactContextBaseJavaModule {
 
@@ -33,6 +43,15 @@ public class RingtoneManagerModule extends ReactContextBaseJavaModule {
   private static final String TYPE_ALL_KEY = "TYPE_ALL";
   private static final String TYPE_NOTIFICATION_KEY = "TYPE_NOTIFICATION";
   private static final String TYPE_RINGTONE_KEY = "TYPE_RINGTONE";
+
+  private static final String E_ACTIVITY_DOES_NOT_EXIST = "E_ACTIVITY_DOES_NOT_EXIST";
+  private static final String E_PICKER_CANCELLED = "E_PICKER_CANCELLED";
+  private static final String E_FAILED_TO_SHOW_PICKER = "E_FAILED_TO_SHOW_PICKER";
+  private static final String E_NO_IMAGE_DATA_FOUND = "E_NO_IMAGE_DATA_FOUND";
+  private static final int RINGTONE_REQUEST_CODE = 1;
+
+
+  private Callback mPickerCallBack;
 
   final static class SettingsKeys {
     public static final String URI = "uri";
@@ -47,6 +66,7 @@ public class RingtoneManagerModule extends ReactContextBaseJavaModule {
   public RingtoneManagerModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
+    reactContext.addActivityEventListener(mActivityEventListener);
   }
 
   @Override
@@ -179,13 +199,54 @@ public class RingtoneManagerModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void setRingtone(String uri) {
-    
+
   }
 
   @ReactMethod
-  public void pickRingtone() {
+  public void pickRingtone(int ringtoneType,Callback successCallback) {
+    Activity currentActivity = getCurrentActivity();
+    if(currentActivity == null){
+      successCallback.invoke(E_ACTIVITY_DOES_NOT_EXIST, "Activity doesn't exist");
+      return;
+    }
+    mPickerCallBack = successCallback;
+    try{
+      Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE,ringtoneType);
+      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE,"select Ringtone for notification");
+      Uri existingToneUri = RingtoneManager.getActualDefaultRingtoneUri(this.reactContext, ringtoneType);
+      Log.d("uri is", "data uri is" +existingToneUri);
+      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, existingToneUri);
+      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
+      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+      currentActivity.startActivityForResult(intent, RINGTONE_REQUEST_CODE);
+
+    }catch(Exception e){
+      mPickerCallBack.invoke(E_FAILED_TO_SHOW_PICKER, e);
+      mPickerCallBack = null;
+    }
+
+
 
   }
+
+  private  final ActivityEventListener mActivityEventListener = new BaseActivityEventListener(){
+    @Override
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, @Nullable Intent data) {
+      super.onActivityResult(activity, requestCode, resultCode, data);
+      if(requestCode ==RINGTONE_REQUEST_CODE){
+        if(resultCode == RESULT_OK && data != null){
+          Uri toneUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+          String notification = getPathFromUri(reactContext, toneUri);
+          Log.d("uri is", "data uri is" + toneUri);
+          mPickerCallBack.invoke(toneUri);
+        }
+        else {
+          mPickerCallBack.invoke("error","no Data");
+        }
+      }
+    }
+  };
 
   @Override
   public Map<String, Object> getConstants() {
