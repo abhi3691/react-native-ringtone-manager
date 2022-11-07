@@ -52,6 +52,8 @@ public class RingtoneManagerModule extends ReactContextBaseJavaModule {
 
 
   private Callback mPickerCallBack;
+  private Callback mErrorCallBack;
+  private int globalRingtoneType;
 
   final static class SettingsKeys {
     public static final String URI = "uri";
@@ -203,50 +205,78 @@ public class RingtoneManagerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void pickRingtone(int ringtoneType,Callback successCallback) {
+  public void pickRingtone(int ringtoneType,Callback successCallback,Callback errorCallBack) {
     Activity currentActivity = getCurrentActivity();
+
     if(currentActivity == null){
-      successCallback.invoke(E_ACTIVITY_DOES_NOT_EXIST, "Activity doesn't exist");
+      errorCallBack.invoke( "Activity doesn't exist");
       return;
     }
     mPickerCallBack = successCallback;
+    mErrorCallBack= errorCallBack;
+    globalRingtoneType=ringtoneType;
     try{
       Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
       intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE,ringtoneType);
       intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE,"select Ringtone for notification");
       Uri existingToneUri = RingtoneManager.getActualDefaultRingtoneUri(this.reactContext, ringtoneType);
-      Log.d("uri is", "data uri is" +existingToneUri);
+//      Log.d("uri is", "data uri is" +existingToneUri);
       intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, existingToneUri);
       intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
       intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
       currentActivity.startActivityForResult(intent, RINGTONE_REQUEST_CODE);
 
     }catch(Exception e){
-      mPickerCallBack.invoke(E_FAILED_TO_SHOW_PICKER, e);
-      mPickerCallBack = null;
+      mErrorCallBack.invoke(e);
     }
+
 
 
 
   }
 
-  private  final ActivityEventListener mActivityEventListener = new BaseActivityEventListener(){
+   private  final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
     @Override
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, @Nullable Intent data) {
-      super.onActivityResult(activity, requestCode, resultCode, data);
-      if(requestCode ==RINGTONE_REQUEST_CODE){
-        if(resultCode == RESULT_OK && data != null){
-          Uri toneUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-          String notification = getPathFromUri(reactContext, toneUri);
-          Log.d("uri is", "data uri is" + toneUri);
-          mPickerCallBack.invoke(toneUri);
-        }
-        else {
-          mPickerCallBack.invoke("error","no Data");
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+      if (requestCode == RINGTONE_REQUEST_CODE) {
+        if(mPickerCallBack != null){
+          if(resultCode == Activity.RESULT_CANCELED){
+            mErrorCallBack.invoke("Image picker was cancelled");
+          }
+          else if (resultCode == Activity.RESULT_OK) {
+            Uri toneUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            Log.d("toneUri","tone uri is"+toneUri);
+
+            if (toneUri == null ) {
+              mErrorCallBack.invoke("No image data found");
+            }
+
+            else{
+
+              String finalResult = getPathFromUri(reactContext,toneUri);
+              if(finalResult == null){
+                mPickerCallBack.invoke(toneUri.toString());
+              }
+              else{
+                mPickerCallBack.invoke(finalResult);
+              }
+
+
+
+
+
+
+            }
+          }
+
+
+
+
         }
       }
     }
   };
+
 
   @Override
   public Map<String, Object> getConstants() {

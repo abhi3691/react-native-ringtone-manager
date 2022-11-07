@@ -53,9 +53,9 @@ Remember to add tests for your change if possible. Run the unit tests by:
 yarn test
 ```
 
-To edit the Objective-C or Swift files, open `example/ios/RingtoneManagerExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-ringtone-manager`.
+To edit the Objective-C or Swift files, open `example/ios/RingtoneManagerExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-ringtone-manager-new`.
 
-To edit the Java or Kotlin files, open `example/android` in Android studio and find the source files at `react-native-ringtone-manager` under `Android`.
+To edit the Java or Kotlin files, open `example/android` in Android studio and find the source files at `react-native-ringtone-manager-new` under `Android`.
 
 ### Commit message convention
 
