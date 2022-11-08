@@ -1,9 +1,10 @@
 import { View, Text, Button, StyleSheet } from 'react-native';
 import React from 'react';
 import RingtoneManager from 'react-native-ringtone-manager-new';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
-  navigation = useNavigation();
+  const navigation = useNavigation();
   //state
   const [result, setResult] = React.useState([]);
 
@@ -19,7 +20,7 @@ const HomeScreen = () => {
 
   //navigation function
   const goToRingeTonePage = () => {
-    navigation?.navigate('RingtoneList', { data: result });
+    navigation.navigate('RingtoneList', { data: result });
   };
 
   const pickRingtone = () => {
