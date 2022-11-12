@@ -25,4 +25,11 @@ const pickRingtone = (type: RingToneType) => {
   );
 };
 
-export default { getRingsByType, pickRingtone, getRingtones };
+const typeofRingTone: RingToneType = {
+  TYPE_ALARM: 'TYPE_ALARM',
+  TYPE_ALL: 'TYPE_ALL',
+  TYPE_NOTIFICATION: 'TYPE_NOTIFICATION',
+  TYPE_RINGTONE: 'TYPE_RINGTONE',
+};
+
+export default { getRingsByType, pickRingtone, getRingtones, typeofRingTone };
