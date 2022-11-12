@@ -4,12 +4,12 @@ import type TypeofRingTone from './RingToneTypes';
 const RingtoneManager = NativeModules.RingtoneManager;
 
 const getRingtones = () => {
-  return RingtoneManager.getRingtones((value: string) => {
+  return RingtoneManager.getRingtones((value: any) => {
     return value;
   });
 };
 const getRingsByType = (type: TypeofRingTone) => {
-  return RingtoneManager.getRingsByType(type, (value: string) => {
+  return RingtoneManager.getRingsByType(type, (value: any) => {
     return value;
   });
 };
@@ -26,10 +26,10 @@ const pickRingtone = (type: TypeofRingTone) => {
 };
 
 const RingToneType: TypeofRingTone = {
-  TYPE_ALARM: 'TYPE_ALARM',
-  TYPE_ALL: 'TYPE_ALL',
-  TYPE_NOTIFICATION: 'TYPE_NOTIFICATION',
-  TYPE_RINGTONE: 'TYPE_RINGTONE',
+  TYPE_ALARM: RingtoneManager.TYPE_ALARM,
+  TYPE_ALL: RingtoneManager.TYPE_ALL,
+  TYPE_NOTIFICATION: RingtoneManager.TYPE_NOTIFICATION,
+  TYPE_RINGTONE: RingtoneManager.TYPE_RINGTONE,
 };
 
 export default { getRingsByType, pickRingtone, getRingtones, RingToneType };
