@@ -3,26 +3,15 @@ import type TypeofRingTone from './RingToneTypes';
 
 const RingtoneManager = NativeModules.RingtoneManager;
 
-const getRingtones = () => {
-  return RingtoneManager.getRingtones((value: any) => {
-    return value;
-  });
+const getRingtones = (): Promise<any> => {
+  return RingtoneManager.getRingtones();
 };
-const getRingsByType = (type: TypeofRingTone) => {
-  return RingtoneManager.getRingsByType(type, (value: any) => {
-    return value;
-  });
+const getRingsByType = (type: TypeofRingTone): Promise<any> => {
+  return RingtoneManager.getRingsByType(type);
 };
 
-const pickRingtone = (type: TypeofRingTone) => {
-  return (
-    RingtoneManager.pickRingtone(type, (value: string) => {
-      return value;
-    }),
-    (error: string | null) => {
-      console.log(error);
-    }
-  );
+const pickRingtone = (type: TypeofRingTone): Promise<any> => {
+  return RingtoneManager.pickRingtone(type);
 };
 
 const RingToneType: TypeofRingTone = {
