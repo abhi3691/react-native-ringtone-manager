@@ -12,7 +12,10 @@ interface RingtoneManagerInterface {
   getRingtones(): any;
   getRingsByType(type: RingtonType): any;
   pickRingtone(type: RingtonType): string | null;
-  type: RingtonType;
+  TYPE_ALL: string;
+  TYPE_RINGTONE: string;
+  TYPE_NOTIFICATION: string;
+  TYPE_ALARM: string;
 }
 
 export default RingtoneManager as RingtoneManagerInterface;
