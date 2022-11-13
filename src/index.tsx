@@ -8,9 +8,15 @@ type RingtonType =
   | 'TYPE_NOTIFICATION'
   | 'TYPE_ALARM';
 
+type ResPospose = {
+  key: number;
+  title: string;
+  uri: string;
+};
+
 interface RingtoneManagerInterface {
-  getRingtones(): any;
-  getRingsByType(type: RingtonType): any;
+  getRingtones(): ResPospose;
+  getRingsByType(type: RingtonType): ResPospose;
   pickRingtone(type: RingtonType): string | null;
 }
 
