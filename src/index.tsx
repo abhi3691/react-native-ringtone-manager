@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-const { RingtoneManager } = NativeModules;
+const RingtoneManager = NativeModules.RingtoneManager;
 
 type RingtonType =
   | 'TYPE_ALL'
